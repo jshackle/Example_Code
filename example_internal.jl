@@ -1,5 +1,6 @@
 using DifferentialEquations
 using Plots
+using Statistics
 
 #Note: must either include or run find_periodicity_and_amplitude.jl to run this file
 function get_problem(p, u0, t)
@@ -19,36 +20,28 @@ function get_problem(p, u0, t)
     return prob
 end
 
-function run_example1()
-tspan = (0.0, 10.0^7);
+function find_internal_period()
+tspan = (0.0, 10.0^8);
+
+gamma_range = 0:0.01:0.15;
+internal_period = Array{Float64}(undef, length(gamma_range));
+
+for ii in 1:length(gamma_range)
 #p = [I, k, M, alpha, gamma]
-p = [4*10^(-6), 0.05, 0.1, 0.001, 0.06];
+p = [4*10^(-6), 0.05, 0.1, 0, gamma_range[ii]];
 #u0 = [A0, P0]
 u0 = [2, log(10^(-3))];
 prob = get_problem(p, u0, tspan)
 #Solve ODE with high tolerance and accurate solver for stiff differential equations
 sol = solve(prob, KenCarp58(), maxiters=10^(10), reltol=10^(-16), abstol=10^(-16));
 (p, a, t) = get_amp_period_and_time(sol);
-
-plot(sol, vars=(1), legend=false)
-xlabel!("Time (yr)")
-ylabel!("Alkalinity")
-savefig("example1_alkalinity_vs_time.png")
-
-scatter(p./1000, a, legend=false)
-xlabel!("Periodicity (kyr)")
-ylabel!("Amplitude (Alkalinity)")
-savefig("example1_periodicity_vs_amplitude.png")
-
-plot(t, a, legend=false)
-xlabel!("Time (yr)")
-ylabel!("Amplitude (Alkalinity)")
-savefig("example1_amplitude_vs_time.png")
-
-plot(t, p./1000, legend=false)
-xlabel!("Time (yr)")
-ylabel!("Periodicity (kyr)")
-savefig("example1_period_vs_time.png")
+internal_period[ii] = mean(p[(length(p)-50):length(p)]);
 end
 
-run_example1()
+scatter(gamma_range, internal_period./1000 , legend=false)
+xlabel!("Feedback Strength")
+ylabel!("Internal Period (kyr)")
+savefig("example_internal_period.png")
+end
+
+find_internal_period()

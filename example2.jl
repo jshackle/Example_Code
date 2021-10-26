@@ -28,6 +28,8 @@ function get_problem(p, u0, t)
     prob = ODEProblem(f!, u0, t, p);
     return prob
 end
+
+function run_example2()
 tspan = (0.0, 10.0^8);
 #p = [I, k, M, alpha, gamma]
 p = [4*10^(-6), 0.05, 0.1, 0.001, (0.06, 0.09)];
@@ -41,19 +43,22 @@ sol = solve(prob, KenCarp58(), maxiters=10^(10), reltol=10^(-16), abstol=10^(-16
 plot(sol, vars=(1), legend=false)
 xlabel!("Time (yr)")
 ylabel!("Alkalinity")
-savefig("example_alkalinity_vs_time.png")
+savefig("example2_alkalinity_vs_time.png")
 
 scatter(p./1000, a, legend=false)
 xlabel!("Periodicity (kyr)")
 ylabel!("Amplitude (Alkalinity)")
-savefig("example_periodicity_vs_amplitude.png")
+savefig("example2_periodicity_vs_amplitude.png")
 
 plot(t, a, legend=false)
 xlabel!("Time (yr)")
 ylabel!("Amplitude (Alkalinity)")
-savefig("example_amplitude_vs_time.png")
+savefig("example2_amplitude_vs_time.png")
 
 plot(t, p./1000, legend=false)
 xlabel!("Time (yr)")
 ylabel!("Periodicity (kyr)")
-savefig("example_period_vs_time.png")
+savefig("example2_period_vs_time.png")
+end
+
+run_example2()
