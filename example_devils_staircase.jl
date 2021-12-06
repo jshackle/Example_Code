@@ -54,8 +54,8 @@ end
 
 #Devil's staircase for alpha = 0.003
 scatter(internal_period./1000, avg_duration./1000 , legend=false)
-xlabel!("Feedback Strength")
-ylabel!("Internal Period (kyr)")
+xlabel!("Internal Period (kyr)")
+ylabel!("Average Duration (kyr)")
 savefig("example_devils_staircase.png")
 end
 
